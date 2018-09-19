@@ -13,53 +13,54 @@ struct node{
 	struct node *next;
 };
 
-struct node *head=NULL;
-struct node *tail=NULL;
+void insertFirst(struct node **headPtr,struct node **tailPtr,int data);
+void insertAtPosition(struct node *headPtr,struct node *tailPtr,int pos,int data);
 
-void insertFirst(int data);
-void insertLast(int data);
+void insertLast(struct node **headPtr,struct node **tailPtr,int data);
 int findSize(const struct node *ptr);
 int searchForItem(const struct node *ptr,int item);
 void updateItem(struct node *ptr,int item,int data);
-void deleteNode(struct node *ptr,int data);
+void deleteNode(struct node **ptr,int data);
 void printList(struct node *ptr);
 
 int main(){
-	insertLast(1);
-	insertFirst(2);
-	insertLast(3);
-	insertLast(4);
-	insertFirst(5);
+	struct node *head=NULL;
+	struct node *tail=NULL;
+
+	insertLast(&head,&tail,1);
+	insertFirst(&head,&tail,2);
+	insertLast(&head,&tail,3);
+	insertLast(&head,&tail,4);
+	insertFirst(&head,&tail,5);
 	printList(head);
 	printf("\nSize= %d",findSize(head));
 	printf("\n%d found at position %d\n", 1, searchForItem(head,1));
 	updateItem(head,1,10);
-	deleteNode(head,5);
+	deleteNode(&head,5);
 	printList(head);
 	return 0;
 }
 
-void insertFirst(int data){
-
+void insertFirst(struct node **headPtr,struct node **tailPtr,int data){
 	struct node *link = (struct node *)malloc(sizeof(struct node));
 	link->data=data;
-	link->next=head;
-	head=link;
-	if(tail==NULL){
-		tail=link;
+	link->next=(*headPtr);
+	(*headPtr)=link;
+	//printf("DATA, %d",headPtr->data);
+	if((*tailPtr)==NULL){
+		(*tailPtr)=link;
 	}
-
 }
 
-void insertLast(int data){
-	if(head==NULL){
-		insertFirst(data);
+void insertLast(struct node **headPtr,struct node **tailPtr,int data){
+	if(*headPtr==NULL){
+		insertFirst(headPtr,tailPtr,data);
 	}else{
 		struct node *link = (struct node *)malloc(sizeof(struct node));
 		link->data=data;
-		tail->next=link;
+		(*tailPtr)->next=link;
 		link->next=NULL;
-		tail=link;
+		(*tailPtr)=link;
 	}
 }
 
@@ -94,11 +95,11 @@ void updateItem(struct node *ptr,int item,int data){
 	}
 }
 
-void deleteNode(struct node *ptr,int data){
-	struct node *current=ptr;
+void deleteNode(struct node **headPtr,int data){
+	struct node *current=(*headPtr);
 	struct node *previous=NULL;
 	if(current->data==data){
-		head=current->next;
+		(*headPtr)=current->next;
 		free(current);
 		return;
 	}
