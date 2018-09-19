@@ -1,79 +1,36 @@
-/*
- * linkedd_list.c
- *
- *  Created on: Sep 19, 2018
- *      Author: khali
- */
+/************************************************
+ *   File Name: linked_list.c					*
+ * Description: source file for linked list		*
+ *  Created on: Sep 19, 2018					*
+ *      Author: Khalid Tarek					*
+ ************************************************/
 
-#include<stdio.h>
-#include<stdlib.h>
+#include"linked_list.h"
 
-struct node{
-	int data;
-	struct node *next;
-};
+/*******************************************************************************
+ *                      Functions Definitions                                  *
+ *******************************************************************************/
 
-void insertFirst(struct node **headPtr,struct node **tailPtr,int data);
-void insertAtPosition(struct node **headPtr,struct node **tailPtr,int pos,int data);
-void middleNode(const struct node *ptr,int*mid);
-void insertLast(struct node **headPtr,struct node **tailPtr,int data);
-int listSize(const struct node *ptr);
-int listSum(const struct node *ptr);
-void listMax(const struct node *ptr,int*max);
-int searchForItem(const struct node *ptr,int item);
-int searchForPos(const struct node *ptr,int pos);
-void updateItem(struct node *ptr,int item,int data);
-void deleteNode(struct node **ptr,int data);
-void printList(struct node *ptr);
-
-int main(){
-	int mid[2],max[2];
-	struct node *head=NULL;
-	struct node *tail=NULL;
-
-	insertLast(&head,&tail,1);
-	insertFirst(&head,&tail,2);
-	insertLast(&head,&tail,3);
-	insertLast(&head,&tail,4);
-	insertFirst(&head,&tail,5);
-	insertAtPosition(&head,&tail,0,15);
-	insertAtPosition(&head,&tail,4,8);
-	insertAtPosition(&head,&tail,7,20);
-
-	printList(head);
-	printf("\nSize= %d",listSize(head));
-	printf("\n%d found at position %d\n", 1, searchForItem(head,1));
-	updateItem(head,1,10);
-	deleteNode(&head,5);
-	printList(head);
-	middleNode(head,mid);
-	printf("\nmiddle found at position %d and its data %d\n",mid[0],mid[1]);
-	printf("\n%d found at position %d\n",searchForPos(head,5),5);
-	printf("\nSum= %d",listSum(head));
-	listMax(head,max);
-	printf("\nMax found at position %d and its data %d\n",max[0],max[1]);
-	return 0;
-}
-
-void insertFirst(struct node **headPtr,struct node **tailPtr,int data){
+void insertFirst(struct node** headPtr, struct node** tailPtr, uint16 data){
 	struct node *link = (struct node *)malloc(sizeof(struct node));
 	link->data=data;
 	link->next=(*headPtr);
 	(*headPtr)=link;
-	//printf("DATA, %d",headPtr->data);
+
 	if((*tailPtr)==NULL){
 		(*tailPtr)=link;
 	}
 }
 
-void insertAtPosition(struct node **headPtr,struct node **tailPtr,int pos,int data){
-	int position=1;
+void insertAtPosition(struct node** headPtr, struct node** tailPtr, uint8 pos, uint16 data){
+	uint8 position=1;
 	struct node *current=(*headPtr);
 	struct node *previous=NULL;
 	if(pos==0){
 		insertFirst(headPtr,tailPtr,data);
 		return;
 	}
+
 	while(current!=NULL){
 		if(position==pos){
 			if(current->next==NULL){
@@ -92,7 +49,7 @@ void insertAtPosition(struct node **headPtr,struct node **tailPtr,int pos,int da
 	}
 }
 
-void insertLast(struct node **headPtr,struct node **tailPtr,int data){
+void insertLast(struct node** headPtr, struct node** tailPtr, uint16 data){
 	if(*headPtr==NULL){
 		insertFirst(headPtr,tailPtr,data);
 	}else{
@@ -104,66 +61,10 @@ void insertLast(struct node **headPtr,struct node **tailPtr,int data){
 	}
 }
 
-int listSize(const struct node *ptr){
-	int size=0;
-	while(ptr!=NULL){
-		size++;
-		ptr=ptr->next;
-	}
-	return size;
-}
-
-int listSum(const struct node *ptr){
-	int sum=0;
-	while(ptr!=NULL){
-		sum+=ptr->data;
-		ptr=ptr->next;
-	}
-	return sum;
-}
-
-void listMax(const struct node *ptr,int*max){
-	int maxVal=ptr->data,pos=0,position=0;
-	while(ptr!=NULL){
-		if(ptr->data>maxVal){
-			maxVal=ptr->data;
-			pos=position;
-		}
-		ptr=ptr->next;
-		position++;
-	}
-	*(max+0)=pos;
-	*(max+1)=maxVal;
-}
-
-int searchForItem(const struct node *ptr,int item){
-	int pos;
-	while(ptr!=NULL){
-		if(ptr->data==item){
-			return pos;
-		}
-		ptr=ptr->next;
-		pos++;
-	}
-	return -1;
-}
-
-int searchForPos(const struct node *ptr,int pos){
-	int position=0;
-	while(ptr!=NULL){
-		if(position==pos){
-			return ptr->data;
-		}
-		ptr=ptr->next;
-		position++;
-	}
-	return -1;
-}
-
-void middleNode(const struct node *ptr,int*mid){
-	char pos=0,step=0;
-	const struct node *ptr1=ptr;
-	const struct node *ptr2=ptr;
+void middleNode(const struct node* headPtr, uint16* mid){
+	uint8 pos=0,step=0;
+	const struct node *ptr1=headPtr;
+	const struct node *ptr2=headPtr;
 	while(ptr1->next!=NULL){
 		ptr1=ptr1->next;
 		step++;
@@ -177,9 +78,71 @@ void middleNode(const struct node *ptr,int*mid){
 	*(mid+0)=pos;
 }
 
-void updateItem(struct node *ptr,int item,int data){
+uint8 listSize(const struct node* headPtr){
+	const struct node *ptr=headPtr;
+	uint16 size=0;
 	while(ptr!=NULL){
-		if(ptr->data==item){
+		size++;
+		ptr=ptr->next;
+	}
+	return size;
+}
+
+uint16 listSum(const struct node* headPtr){
+	const struct node *ptr=headPtr;
+	int sum=0;
+	while(ptr!=NULL){
+		sum+=ptr->data;
+		ptr=ptr->next;
+	}
+	return sum;
+}
+
+void listMax(const struct node* headPtr, uint16* max){
+	const struct node *ptr=headPtr;
+	uint16 maxVal=ptr->data,pos=0,position=0;
+	while(ptr!=NULL){
+		if(ptr->data>maxVal){
+			maxVal=ptr->data;
+			pos=position;
+		}
+		ptr=ptr->next;
+		position++;
+	}
+	*(max+0)=pos;
+	*(max+1)=maxVal;
+}
+
+uint8 searchByValue(const struct node* headPtr, uint16 value){
+	const struct node *ptr=headPtr;
+	uint8 pos;
+	while(ptr!=NULL){
+		if(ptr->data==value){
+			return pos;
+		}
+		ptr=ptr->next;
+		pos++;
+	}
+	return -1;
+}
+
+uint16 searchByPos(const struct node* headPtr, uint8 pos){
+	const struct node *ptr=headPtr;
+	uint8 position=0;
+	while(ptr!=NULL){
+		if(position==pos){
+			return ptr->data;
+		}
+		ptr=ptr->next;
+		position++;
+	}
+	return -1;
+}
+
+void updateByValue(struct node* headPtr,uint16 value,uint16 data){
+	struct node *ptr=headPtr;
+	while(ptr!=NULL){
+		if(ptr->data==value){
 			ptr->data=data;
 			return;
 		}
@@ -187,7 +150,7 @@ void updateItem(struct node *ptr,int item,int data){
 	}
 }
 
-void deleteNode(struct node **headPtr,int data){
+void deleteNode(struct node** headPtr,uint16 data){
 	struct node *current=(*headPtr);
 	struct node *previous=NULL;
 	if(current->data==data){
@@ -206,7 +169,8 @@ void deleteNode(struct node **headPtr,int data){
 	}
 }
 
-void printList(struct node *ptr){
+void printList(const struct node* headPtr){
+	const struct node *ptr=headPtr;
 	printf("Head => ");
 	while(ptr!=NULL){
 		printf("%d => ",ptr->data);
